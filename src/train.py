@@ -8,7 +8,12 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 import mlflow
 import mlflow.sklearn
 import joblib
+from pathlib import Path
 import os
+
+ROOT = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT / "models"
+DATA_PATH = ROOT / "data" / "heart_disease_clean.csv"
 
 def prepare_features(df):
     """Feature engineering and scaling"""
@@ -23,7 +28,8 @@ def prepare_features(df):
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    joblib.dump(scaler, 'models\\scaler.pkl')
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump(scaler, MODELS_DIR / "scaler.pkl")
     
     return X_train_scaled, X_test_scaled, y_train, y_test, scaler
 
@@ -58,7 +64,7 @@ def train_logistic_regression(X_train, X_test, y_train, y_test):
         mlflow.log_metrics(metrics)
         mlflow.sklearn.log_model(model, "model")
         
-        joblib.dump(model, 'models\\logistic_regression.pkl')
+        joblib.dump(model, MODELS_DIR / "logistic_regression.pkl")
         
         print(f"✓ Logistic Regression - Accuracy: {metrics['accuracy']:.4f}, ROC-AUC: {metrics['roc_auc']:.4f}")
         
@@ -87,7 +93,7 @@ def train_random_forest(X_train, X_test, y_train, y_test):
         mlflow.log_metrics(metrics)
         mlflow.sklearn.log_model(model, "model")
         
-        joblib.dump(model, 'models\\random_forest.pkl')
+        joblib.dump(model, MODELS_DIR / "random_forest.pkl")
         
         print(f"✓ Random Forest - Accuracy: {metrics['accuracy']:.4f}, ROC-AUC: {metrics['roc_auc']:.4f}")
         
@@ -97,9 +103,9 @@ if __name__ == "__main__":
     mlflow.set_tracking_uri("file:./mlruns")
     mlflow.set_experiment("heart_disease_prediction")
     
-    df = pd.read_csv('data\\heart_disease_clean.csv')
+    df = pd.read_csv(DATA_PATH)
     
-    os.makedirs('models', exist_ok=True)
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
     
     X_train, X_test, y_train, y_test, scaler = prepare_features(df)
     
@@ -109,5 +115,5 @@ if __name__ == "__main__":
     best_model_name = 'random_forest' if rf_metrics['roc_auc'] > lr_metrics['roc_auc'] else 'logistic_regression'
     print(f"\n✓ Best model: {best_model_name}")
     
-    with open('models\\best_model.txt', 'w') as f:
+    with open(MODELS_DIR / "best_model.txt", 'w') as f:
         f.write(best_model_name)

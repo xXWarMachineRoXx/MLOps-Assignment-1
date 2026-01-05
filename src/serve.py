@@ -7,6 +7,7 @@ from fastapi.responses import Response
 import time
 import logging
 import os
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,13 +18,16 @@ PREDICTION_COUNTER = Counter('predictions_total', 'Total predictions', ['predict
 
 app = FastAPI(title="Heart Disease Prediction API", version="1.0.0")
 
+ROOT = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT / "models"
+
 # Load model and scaler
 try:
-    with open('models\\best_model.txt', 'r') as f:
+    with open(MODELS_DIR / "best_model.txt", 'r') as f:
         best_model_name = f.read().strip()
     
-    model = joblib.load(f'models\\{best_model_name}.pkl')
-    scaler = joblib.load('models\\scaler.pkl')
+    model = joblib.load(MODELS_DIR / f"{best_model_name}.pkl")
+    scaler = joblib.load(MODELS_DIR / "scaler.pkl")
     logger.info(f"✓ Loaded model: {best_model_name}")
 except Exception as e:
     logger.error(f"Error loading model: {e}")
@@ -86,7 +90,7 @@ def predict(input_data: HeartDiseaseInput):
         
         logger.info(f"Prediction: {prediction}, Confidence: {confidence:.2f}")
         
-        with open('models\\best_model.txt', 'r') as f:
+        with open(MODELS_DIR / "best_model.txt", 'r') as f:
             model_name = f.read().strip()
         
         return {
