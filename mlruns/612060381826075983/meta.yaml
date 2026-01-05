@@ -1,0 +1,6 @@
+artifact_location: file:D:/heart-disease-mlops/mlruns/612060381826075983
+creation_time: 1767612808961
+experiment_id: '612060381826075983'
+last_update_time: 1767612808961
+lifecycle_stage: active
+name: heart_disease_prediction

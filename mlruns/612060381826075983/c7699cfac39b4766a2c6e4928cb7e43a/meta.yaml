@@ -1,0 +1,14 @@
+artifact_uri: file:D:/heart-disease-mlops/mlruns/612060381826075983/c7699cfac39b4766a2c6e4928cb7e43a/artifacts
+end_time: 1767612819688
+entry_point_name: ''
+experiment_id: '612060381826075983'
+lifecycle_stage: active
+run_id: c7699cfac39b4766a2c6e4928cb7e43a
+run_name: Random_Forest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1767612814976
+status: 3
+tags: []
+user_id: rishabh.mittal
