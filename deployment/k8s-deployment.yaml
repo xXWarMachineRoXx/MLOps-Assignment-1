@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: mlopsregistryfoetron.azurecr.io/heart-disease-api:1.0
+        image: mlopsassignmentregisty.azurecr.io/heart-disease-api:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
